@@ -6,29 +6,29 @@
 #include <vector>
 #include <cstdio>
 
-
+std::vector<std::string> split_path(const std::string &Src) {
+    std::vector<std::string> vpath;
+    size_t pos = (Src[0] == '/' ? 1 : 0), len = Src.length();
+    const char *src = Src.c_str();
+    for (size_t i = 0; i < len; i++) {
+        std::string t;
+        if ('\n' != src[i]);
+        else {
+            t = Src.substr(pos, i - pos);
+            if (1 < t.length()) vpath.push_back(t);
+            pos = ++i;
+        }
+    }
+    if (pos < len) vpath.push_back(Src.substr(pos));
+    return vpath;
+}
 
 int main(const int argc, const char* argv[]) {
-    std::vector<std::string> vsrc;
-    std::string Src;
-    FILE *fin = fopen("log.cfg", "rb");
-    struct stat fstt;
-    char *buff = nullptr;
-    char *ptr;
-    stat("log.cfg", &fstt);
-    buff = new char[fstt.st_size + 1];
-    fread(buff, fstt.st_size, 1, fin);
-    buff[fstt.st_size] = 0;
-    Src = buff;
-    delete[] buff;
-    size_t now, pos = 0;
-    while (pos < (now = Src.find('\n'))) {
-        vsrc.push_back(Src.substr(pos, now - pos));
-        pos = now + 1;
+    std::vector<std::string> vpath = split_path(std::getenv("PWD"));
+    std::string r;
+    for (auto i = vpath.begin(); vpath.end() != i; i++) {
+        r += ("/" + *i);
     }
-    if (pos < (Src.size() - 1)) vsrc.push_back(Src.substr(pos));
-    for (auto i = vsrc.begin(); i != vsrc.end(); i++) {
-        std::cout << *i << std::endl;
-    }
+    std::cout << r << std::endl;
     return 0;
 }
