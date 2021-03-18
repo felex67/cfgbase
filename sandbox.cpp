@@ -1,34 +1,27 @@
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <iostream>
-#include <cstring>
-#include <string>
-#include <vector>
 #include <cstdio>
+#include <iostream>
 
-std::vector<std::string> split_path(const std::string &Src) {
-    std::vector<std::string> vpath;
-    size_t pos = (Src[0] == '/' ? 1 : 0), len = Src.length();
-    const char *src = Src.c_str();
-    for (size_t i = 0; i < len; i++) {
-        std::string t;
-        if ('\n' != src[i]);
-        else {
-            t = Src.substr(pos, i - pos);
-            if (1 < t.length()) vpath.push_back(t);
-            pos = ++i;
-        }
-    }
-    if (pos < len) vpath.push_back(Src.substr(pos));
-    return vpath;
-}
+#include "config.hpp"
+
+struct _LogConfig {
+    cfg_inst_t Conf = {"log.conf", "config", sizeof(*this) };
+    struct _Mode {
+        cfg_group_t __group = { "Mode", sizeof(*this) };
+        cfg_string_t RunAs = { "RunAs", "thread" };
+    } Mode;
+    struct _Path {
+        cfg_group_t __group = { "Path", sizeof(*this) };
+        cfg_string_t Pipe = { "Pipe", "/var/tmp/flxwd-logpipe.pipe" };
+    } Path;
+    struct _Format {
+        cfg_group_t __group = { "Format", sizeof(*this) };
+        cfg_string_t Datetime = { "Datetime", "%X %x" };
+    } Format;
+} LogConfig;
 
 int main(const int argc, const char* argv[]) {
-    std::vector<std::string> vpath = split_path(std::getenv("PWD"));
-    std::string r;
-    for (auto i = vpath.begin(); vpath.end() != i; i++) {
-        r += ("/" + *i);
-    }
-    std::cout << r << std::endl;
+    LogConfig.Conf.load();
+    std::cout << LogConfig.Conf.toString() << std::endl;
+    LogConfig.Conf.save();
     return 0;
 }
