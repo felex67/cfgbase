@@ -1,7 +1,7 @@
-all:cfgtest
-cfgtest:cfgbase.o test.o
-	g++ cfgbase.cpp test.cpp -o cfgtest
-	./cfgtest
+all:test
+test:cfgbase.o test.o
+	g++ cfgbase.cpp test.cpp -o test
+	./test
 	rm -rf *.o
 cfgbase.o:
 	g++ -c cfgbase.cpp -o cfgbase.o

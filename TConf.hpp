@@ -3,7 +3,7 @@
 #include "cfgbase.hpp"
 
 struct TConf {
-    cfg_inst_t conf_instance = { "test.conf", "test", sizeof(*this) };
+    cfg_inst_t conf_instance = { "test.conf", "config", sizeof(*this) };
     struct _String {
         cfg_group_t __header = { "String", sizeof(*this) };
         cfg_string string = { "VarName", "VarValue" };
